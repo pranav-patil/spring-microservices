@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: zuul-server
+
+server:
+  port: 8312
+
+zuul:
+  prefix: /api
+  routes:
+    finance-service:
+      path: /finance-service/**
+      url: http://localhost:8301
+
