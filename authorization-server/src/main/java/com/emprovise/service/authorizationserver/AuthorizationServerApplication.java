@@ -1,4 +1,4 @@
-package com.emprovise.service.oauth2;
+package com.emprovise.service.authorizationserver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

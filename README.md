@@ -9,8 +9,9 @@ In this showcase you'll see the following in action:
 
 To run the application:
 -------------------
-From the command line with Git and Maven:
+From the command line with Git and Gradle:
 
     $ git clone https://github.com/pranav-patil/spring-microservices.git
     $ cd spring-microservices
-    $ mvn jetty:run (by default uses 8080]
+    $ gradle clean build
+    $ java -jar config-server/build/libs/config-server-0.0.1-SNAPSHOT.jar

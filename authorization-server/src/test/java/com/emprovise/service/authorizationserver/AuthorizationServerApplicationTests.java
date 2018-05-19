@@ -1,4 +1,4 @@
-package com.emprovise.service.oauth2;
+package com.emprovise.service.authorizationserver;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
