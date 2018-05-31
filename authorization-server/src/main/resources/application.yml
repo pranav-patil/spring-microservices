@@ -4,3 +4,27 @@ logging:
     org.springframework.security: DEBUG
 server:
   port: 8089
+
+security:
+  oauth2:
+    client:
+      clientId: account-service
+      clientSecret: ${ACCOUNT_SERVICE_PASSWORD}
+      accessTokenUri: http://auth-service:5000/uaa/oauth/token
+      grant-type: client_credentials
+      scope: server
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testdb
+    username: appuser
+    password: test123
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+

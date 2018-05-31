@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -23,13 +24,15 @@ import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFacto
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
-    @Value("${security.oauth2.resource.id}")
+    @Value("${security.oauth2.client.clientId}")
     private String resourceId;
-    @Value("${security.oauth2.client.client-secret}")
+    @Value("${security.oauth2.client.clientSecret}")
     private String clientSecret;
 
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private Environment environment;
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
@@ -50,27 +53,39 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(ClientDetailsServiceConfigurer client) throws Exception {
+
         client.inMemory()
-                .withClient("normal-app")
-                .authorizedGrantTypes("authorization_code", "implicit")
-                .authorities("ROLE_CLIENT")
-                .scopes("read", "write")
-                .resourceIds(resourceId)
+                .withClient("browser")
+                .authorizedGrantTypes("refresh_token", "password")
+                .authorities("APPLICATION_CLIENT")
+                .scopes("ui")
                 .accessTokenValiditySeconds(3600)
                 .refreshTokenValiditySeconds(10000)
                 .and()
-                .withClient("trusted-app")
-                .authorizedGrantTypes("client_credentials", "password", "refresh_token")
-                .authorities("ROLE_TRUSTED_CLIENT")
-                .scopes("read", "write")
+                .withClient("account-service")
+                .secret(environment.getProperty("ACCOUNT_SERVICE_PASSWORD"))
+                .authorizedGrantTypes("client_credentials", "refresh_token")
+                .authorities("APPLICATION_CLIENT")
+                .scopes("server")
                 .resourceIds(resourceId)
-                .accessTokenValiditySeconds(3600)
-                .refreshTokenValiditySeconds(10000)
-                .secret(clientSecret)
+                .and()
+                .withClient("statistics-service")
+                .secret(environment.getProperty("STATISTICS_SERVICE_PASSWORD"))
+                .authorizedGrantTypes("client_credentials", "refresh_token")
+                .authorities("APPLICATION_CLIENT")
+                .scopes("server")
+                .resourceIds("statistics-service")
+                .and()
+                .withClient("notification-service")
+                .secret(environment.getProperty("NOTIFICATION_SERVICE_PASSWORD"))
+                .authorizedGrantTypes("client_credentials", "refresh_token")
+                .authorities("APPLICATION_CLIENT")
+                .scopes("server")
+                .resourceIds("notification-service")
                 .and()
                 .withClient("register-app")
                 .authorizedGrantTypes("client_credentials")
-                .authorities("ROLE_REGISTER")
+                .authorities("SECURITY_ADMIN")
                 .scopes("read")
                 .resourceIds(resourceId)
                 .secret(clientSecret);

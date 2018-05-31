@@ -45,3 +45,8 @@ dependencyManagement {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
 }
+
+task runJar(type: JavaExec, dependsOn: jar) {
+	main = "-jar"
+	args jar.archivePath
+}
