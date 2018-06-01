@@ -1,7 +1,7 @@
 package com.emprovise.service.authorizationserver.service;
 
-import com.emprovise.service.authorizationserver.domain.User;
-import com.emprovise.service.authorizationserver.repository.UserRepository;
+import com.emprovise.service.authorizationserver.domain.UserAccount;
+import com.emprovise.service.authorizationserver.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,22 +17,22 @@ import javax.security.auth.login.AccountException;
 public class UserAccountService implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserAccountRepository userAccountRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername( username );
+        return userAccountRepository.findByUsername( username );
     }
 
-    public User register(User user) throws AccountException {
-        if ( userRepository.countByUsername( user.getUsername() ) == 0 ) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            return userRepository.save(user);
+    public UserAccount register(UserAccount userAccount) throws AccountException {
+        if ( userAccountRepository.countByUsername( userAccount.getUsername() ) == 0 ) {
+            userAccount.setPassword(passwordEncoder.encode(userAccount.getPassword()));
+            return userAccountRepository.save(userAccount);
         } else {
-            throw new AccountException(String.format("Username [%s] already taken.", user.getUsername()));
+            throw new AccountException(String.format("Username [%s] already taken.", userAccount.getUsername()));
         }
     }
 
@@ -42,10 +42,10 @@ public class UserAccountService implements UserDetailsService {
     @Transactional
     public void removeUserAccount() throws UsernameNotFoundException {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername( username );
+        UserAccount userAccount = userAccountRepository.findByUsername( username );
 
-        if(user != null) {
-            userRepository.delete(user);
+        if(userAccount != null) {
+            userAccountRepository.delete(userAccount);
         }
     }
 }

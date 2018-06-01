@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class User implements UserDetails {
+public class UserAccount implements UserDetails {
 
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE)
@@ -27,7 +27,7 @@ public class User implements UserDetails {
 
     private boolean accountNonExpired, accountNonLocked, credentialsNonExpired, enabled;
 
-    public User() {
+    public UserAccount() {
         this.accountNonExpired = true;
         this.accountNonLocked = true;
         this.credentialsNonExpired = true;
