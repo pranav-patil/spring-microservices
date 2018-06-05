@@ -10,6 +10,10 @@ buildscript {
 	}
 }
 
+plugins {
+	id "net.ltgt.apt" version "0.9"
+}
+
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
@@ -25,19 +29,28 @@ repositories {
 
 ext {
 	springCloudVersion = 'Finchley.RC1'
+	mapstructVersion = "1.2.0.Final"
 }
 
 dependencies {
 	compile('org.springframework.cloud:spring-cloud-starter-oauth2')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile "org.mapstruct:mapstruct-jdk8:${mapstructVersion}"
 	runtime('org.postgresql:postgresql:42.2.2')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+    apt "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 }
 
 dependencyManagement {
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
+}
+
+tasks.withType(JavaCompile) {
+	options.compilerArgs = [
+			'-Amapstruct.suppressGeneratorTimestamp=true'
+	]
 }
 
 task runJar(type: JavaExec, dependsOn: jar) {

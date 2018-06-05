@@ -1,4 +1,4 @@
-package com.emprovise.service.authorizationserver;
+package com.emprovise.service.authorizationserver.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -16,9 +15,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
-import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
+import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 
 @Configuration
 @EnableAuthorizationServer
@@ -46,8 +43,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-        oauthServer.tokenKeyAccess("isAnonymous() || hasAuthority('ROLE_TRUSTED_CLIENT')")
-                .checkTokenAccess("hasAuthority('ROLE_TRUSTED_CLIENT')")
+        oauthServer.tokenKeyAccess("isAnonymous() || hasAuthority('APPLICATION_CLIENT')")
+                .checkTokenAccess("hasAuthority('APPLICATION_CLIENT')")
                 .passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
 
@@ -55,10 +52,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(ClientDetailsServiceConfigurer client) throws Exception {
 
         client.inMemory()
-                .withClient("browser")
-                .authorizedGrantTypes("refresh_token", "password")
+                .withClient("trusted-app")
+                .authorizedGrantTypes("client_credentials", "password", "refresh_token")
                 .authorities("APPLICATION_CLIENT")
-                .scopes("ui")
+                .scopes("read", "write")
+                .resourceIds(resourceId)
                 .accessTokenValiditySeconds(3600)
                 .refreshTokenValiditySeconds(10000)
                 .and()
@@ -68,6 +66,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .authorities("APPLICATION_CLIENT")
                 .scopes("server")
                 .resourceIds(resourceId)
+                .secret(clientSecret)
                 .and()
                 .withClient("statistics-service")
                 .secret(environment.getProperty("STATISTICS_SERVICE_PASSWORD"))
@@ -85,15 +84,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .and()
                 .withClient("register-app")
                 .authorizedGrantTypes("client_credentials")
-                .authorities("SECURITY_ADMIN")
+                .authorities("SECURITY_REGISTER")
                 .scopes("read")
-                .resourceIds(resourceId)
                 .secret(clientSecret);
     }
 
     @Bean
     public TokenStore tokenStore() {
-        return new JwtTokenStore(jwtTokenEnhancer());
+        return new InMemoryTokenStore();
     }
 
     @Bean
@@ -103,14 +101,5 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         defaultTokenServices.setTokenStore(tokenStore());
         defaultTokenServices.setSupportRefreshToken(true);
         return defaultTokenServices;
-    }
-
-    @Bean
-    protected JwtAccessTokenConverter jwtTokenEnhancer() {
-        ClassPathResource jwtResource = new ClassPathResource("keys/jwtkey.jks");
-        KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(jwtResource, "myPass123".toCharArray());
-        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setKeyPair(keyStoreKeyFactory.getKeyPair("jwt"));
-        return converter;
     }
 }

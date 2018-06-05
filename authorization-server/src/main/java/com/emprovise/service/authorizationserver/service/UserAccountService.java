@@ -27,6 +27,10 @@ public class UserAccountService implements UserDetailsService {
         return userAccountRepository.findByUsername( username );
     }
 
+    public UserAccount findAccountByUsername(String username) {
+        return userAccountRepository.findByUsername( username );
+    }
+
     public UserAccount register(UserAccount userAccount) throws AccountException {
         if ( userAccountRepository.countByUsername( userAccount.getUsername() ) == 0 ) {
             userAccount.setPassword(passwordEncoder.encode(userAccount.getPassword()));

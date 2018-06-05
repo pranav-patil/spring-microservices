@@ -1,4 +1,4 @@
-package com.emprovise.service.authorizationserver;
+package com.emprovise.service.authorizationserver.config;
 
 
 import com.emprovise.service.authorizationserver.service.UserAccountService;
