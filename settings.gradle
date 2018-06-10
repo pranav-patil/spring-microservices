@@ -5,6 +5,6 @@ include "config-server"
 include "eureka-service"
 include "finance-service"
 include "sqldb-service"
-include "web-service"
+include "statistics-service"
 include "zuul-server"
 

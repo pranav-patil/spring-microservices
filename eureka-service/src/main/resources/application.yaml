@@ -11,3 +11,5 @@ eureka:
     fetchRegistry: false
     server:
       waitTimeInMsWhenSyncEmpty: 0
+    service-url:
+      defaultZone: http://localhost:8302/eureka

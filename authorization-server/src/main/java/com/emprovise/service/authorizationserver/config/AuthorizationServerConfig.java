@@ -23,8 +23,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Value("${security.oauth2.client.clientId}")
     private String resourceId;
-    @Value("${security.oauth2.client.clientSecret}")
-    private String clientSecret;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -52,41 +50,34 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(ClientDetailsServiceConfigurer client) throws Exception {
 
         client.inMemory()
+                .withClient("register-app")
+                .secret(environment.getProperty("AUTH_SERVICE_PASSWORD"))
+                .authorizedGrantTypes("client_credentials")
+                .authorities("SECURITY_REGISTER")                                   // role of the user
+                .scopes("read")                                                     // access to resources
+                .and()
                 .withClient("trusted-app")
-                .authorizedGrantTypes("client_credentials", "password", "refresh_token")
+                .secret(environment.getProperty("AUTH_SERVICE_PASSWORD"))
+                .authorizedGrantTypes("password", "refresh_token")
                 .authorities("APPLICATION_CLIENT")
                 .scopes("read", "write")
                 .resourceIds(resourceId)
-                .accessTokenValiditySeconds(3600)
-                .refreshTokenValiditySeconds(10000)
+                .accessTokenValiditySeconds(30)
+                .refreshTokenValiditySeconds(100)
                 .and()
-                .withClient("account-service")
-                .secret(environment.getProperty("ACCOUNT_SERVICE_PASSWORD"))
+                .withClient("finance-service")
+                .secret(environment.getProperty("FINANCE_SERVICE_PASSWORD"))
                 .authorizedGrantTypes("client_credentials", "refresh_token")
                 .authorities("APPLICATION_CLIENT")
                 .scopes("server")
-                .resourceIds(resourceId)
-                .secret(clientSecret)
+                .resourceIds("finance-service")
                 .and()
                 .withClient("statistics-service")
                 .secret(environment.getProperty("STATISTICS_SERVICE_PASSWORD"))
                 .authorizedGrantTypes("client_credentials", "refresh_token")
                 .authorities("APPLICATION_CLIENT")
                 .scopes("server")
-                .resourceIds("statistics-service")
-                .and()
-                .withClient("notification-service")
-                .secret(environment.getProperty("NOTIFICATION_SERVICE_PASSWORD"))
-                .authorizedGrantTypes("client_credentials", "refresh_token")
-                .authorities("APPLICATION_CLIENT")
-                .scopes("server")
-                .resourceIds("notification-service")
-                .and()
-                .withClient("register-app")
-                .authorizedGrantTypes("client_credentials")
-                .authorities("SECURITY_REGISTER")
-                .scopes("read")
-                .secret(clientSecret);
+                .resourceIds("statistics-service");
     }
 
     @Bean

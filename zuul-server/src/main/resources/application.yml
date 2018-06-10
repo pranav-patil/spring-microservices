@@ -7,8 +7,27 @@ server:
 
 zuul:
   prefix: /api
-  routes:
-    finance-service:
-      path: /finance-service/**
-      url: http://localhost:8301
+  ignoredServices: '*'
+  host:
+    connect-timeout-millis: 20000
+    socket-timeout-millis: 20000
 
+  routes:
+    auth-service:
+        path: /auth/**
+        url: http://auth-service:5000
+        stripPrefix: false
+        sensitiveHeaders:
+
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 20000
+
+ribbon:
+  ReadTimeout: 20000
+  ConnectTimeout: 20000

@@ -1,18 +1,14 @@
-server.contextPath: /auth
-logging:
-  level:
-    org.springframework.security: DEBUG
-server:
-  port: 8089
-
 security:
   oauth2:
     client:
-      clientId: account-service
-      clientSecret: ${ACCOUNT_SERVICE_PASSWORD}
-      accessTokenUri: http://auth-service:5000/uaa/oauth/token
-      grant-type: client_credentials
-      scope: server
+      clientId: auth-service
+
+server:
+  contextPath: /auth
+  port: 1000
+logging:
+  level:
+    org.springframework.security: DEBUG
 
 spring:
   datasource:
