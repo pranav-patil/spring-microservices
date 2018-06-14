@@ -4,13 +4,16 @@ security:
       clientId: auth-service
 
 server:
-  contextPath: /auth
+#  servlet:
+#    contextPath: /auth
   port: 1000
 logging:
   level:
     org.springframework.security: DEBUG
 
 spring:
+  application:
+    name: auth-service
   datasource:
     url: jdbc:postgresql://localhost:5432/testdb
     username: appuser
@@ -24,3 +27,11 @@ spring:
           lob:
             non_contextual_creation: true
 
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8302/eureka
+  instance:
+    hostname: localhost

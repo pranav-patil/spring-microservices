@@ -3,7 +3,7 @@ spring:
     name: zuul-server
 
 server:
-  port: 8312
+  port: 9000
 
 zuul:
   prefix: /api
@@ -11,14 +11,11 @@ zuul:
   host:
     connect-timeout-millis: 20000
     socket-timeout-millis: 20000
-
   routes:
-    auth-service:
+    auth:
         path: /auth/**
-        url: http://auth-service:5000
-        stripPrefix: false
-        sensitiveHeaders:
-
+        serviceId: auth-service
+        sensitiveHeaders: Cookie,Set-Cookie
 
 hystrix:
   command:
@@ -31,3 +28,13 @@ hystrix:
 ribbon:
   ReadTimeout: 20000
   ConnectTimeout: 20000
+  eureka:
+    enabled: true
+
+eureka:
+  client:
+    registerWithEureka: false
+    serviceUrl:
+      defaultZone: http://localhost:8302/eureka
+  instance:
+    hostname: localhost

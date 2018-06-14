@@ -30,6 +30,7 @@ ext {
 
 dependencies {
 	compile('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
+	compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

@@ -19,11 +19,11 @@ security:
     client:
       clientId: finance-service
       clientSecret: ${FINANCE_SERVICE_PASSWORD}
-      accessTokenUri: http://auth-service:5000/auth/oauth/token
+      accessTokenUri: http://localhost:9000/api/auth/oauth/token
       grant-type: client_credentials
       scope: server
     resource:
-      userInfoUri: BUGFIX
+      userInfoUri: http://localhost:9000/api/auth/user/info
 
 alphavantage:
   apikey: FKJEFKEW
