@@ -37,6 +37,7 @@ dependencies {
 	compile('org.springframework.cloud:spring-cloud-starter-oauth2')
 	compile('org.springframework.cloud:spring-cloud-starter-openfeign')
 	compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+	compile('org.springframework.cloud:spring-cloud-starter-netflix-hystrix')
 	compile('org.springframework.security.oauth:spring-security-oauth2')
 	compile('com.google.code.gson:gson:2.8.4')
 	runtime('com.h2database:h2')
