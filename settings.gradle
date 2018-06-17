@@ -1,10 +1,10 @@
 rootProject.name = 'spring-microservices'
 
-include "authorization-server"
-include "config-server"
-include "eureka-service"
+include "analytics-service"
+include "authorization-service"
+include "config-service"
+include "discovery-service"
 include "finance-service"
+include "gateway-service"
 include "sqldb-service"
-include "statistics-service"
-include "zuul-server"
 
