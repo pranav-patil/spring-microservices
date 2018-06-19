@@ -16,6 +16,10 @@ zuul:
         path: /auth/**
         serviceId: auth-service
         sensitiveHeaders: Cookie,Set-Cookie
+    analytics:
+        path: /analytics/**
+        serviceId: analytics-service
+        sensitiveHeaders: Cookie,Set-Cookie
 
 hystrix:
   command:

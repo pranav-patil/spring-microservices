@@ -4,6 +4,7 @@ import feign.RequestInterceptor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.security.oauth2.client.feign.OAuth2FeignRequestInterceptor;
@@ -19,8 +20,9 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableDiscoveryClient
 @EnableResourceServer
 @EnableOAuth2Client
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableCircuitBreaker
 @EnableFeignClients
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AnalyticsServiceApplication {
 
 	public static void main(String[] args) {
