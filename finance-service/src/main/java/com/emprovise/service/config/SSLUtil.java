@@ -1,4 +1,4 @@
-package com.emprovise.service.api;
+package com.emprovise.service.config;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;

@@ -1,12 +1,15 @@
 package com.emprovise.service.authorizationserver.domain;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class UserAccount implements UserDetails {
@@ -23,7 +26,9 @@ public class UserAccount implements UserDetails {
     private String email;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles;
+    private Set<String> roles;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> authorities;
 
     private boolean accountNonExpired, accountNonLocked, credentialsNonExpired, enabled;
 
@@ -55,23 +60,30 @@ public class UserAccount implements UserDetails {
     }
 
     public void grantAuthority(String authority) {
-        if ( roles == null ) roles = new ArrayList<>();
-        roles.add(authority);
+        if ( authorities == null ) authorities = new HashSet<>();
+        authorities.add(authority);
     }
 
     @Override
     public List<GrantedAuthority> getAuthorities(){
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        roles.forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
-        return authorities;
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        authorities.forEach(authority -> grantedAuthorities.add(new SimpleGrantedAuthority(authority)));
+        return grantedAuthorities;
     }
 
-    public List<String> getRoles() {
+    public Set<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
+    public void addRoles(String... roles) {
+
+        if(this.roles == null) {
+            this.roles = new HashSet<>();
+        }
+
+        if(roles != null) {
+            CollectionUtils.addAll(this.roles, roles);
+        }
     }
 
     public String getPassword() {

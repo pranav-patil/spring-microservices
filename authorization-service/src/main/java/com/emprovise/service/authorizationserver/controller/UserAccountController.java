@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.security.auth.login.AccountException;
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -46,11 +48,19 @@ public class UserAccountController {
         return userAccountMapper.mapToUserBean(account);
     }
 
+    @PreAuthorize("hasAnyRole('SECURITY_ADMIN')")
+    @GetMapping(path = "/details", produces = "application/json" )
+    public Principal userDetails(Principal principal) {
+        return principal;
+    }
+
     @PreAuthorize("hasAuthority('SECURITY_REGISTER')")
     @PostMapping(path = "/register", produces = "application/json")
     public ResponseEntity<UserBean> registerUser(@RequestBody UserBean userBean) throws AccountException {
         UserAccount account = userAccountMapper.mapToAccount(userBean);
+        account.addRoles("read", "write", "server");
         account.grantAuthority("SECURITY_ADMIN");
+        account.grantAuthority("APPLICATION_CLIENT");
         account = userAccountService.register(account);
         return new ResponseEntity<>(userAccountMapper.mapToUserBean(account), HttpStatus.OK);
     }

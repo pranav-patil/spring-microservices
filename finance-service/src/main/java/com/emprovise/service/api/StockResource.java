@@ -1,12 +1,11 @@
-package com.emprovise.service.client;
+package com.emprovise.service.api;
 
-import com.emprovise.service.api.SSLUtil;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.emprovise.service.config.SSLUtil;
+import com.emprovise.service.dto.StockDetailDTO;
+import com.emprovise.service.mapper.StockDetailDTOMapper;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +19,8 @@ public class StockResource {
 
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private StockDetailDTOMapper stockDTOMapper;
     @Value("${alphavantage.apikey}")
     private String apiKey;
 
@@ -29,8 +30,8 @@ public class StockResource {
 //    @PreAuthorize("#oauth2.hasScope('server')")
     @HystrixCommand(commandKey = "getStockDetails", fallbackMethod = "getStockDetailsFallback")
     @GetMapping("/symbol/{symbol}/interval/{interval}")
-    public JsonObject getStockDetails(@PathVariable("symbol") String symbol,
-                                      @PathVariable("interval") String interval) throws Exception {
+    public StockDetailDTO getStockDetails(@PathVariable("symbol") String symbol,
+                                          @PathVariable("interval") String interval) throws Exception {
 
         UriComponentsBuilder builder = UriComponentsBuilder
                 .fromUriString(ALPHA_VANTAGE_URL)
@@ -41,19 +42,11 @@ public class StockResource {
 
         SSLUtil.turnOffSslChecking();
         String response = restTemplate.getForObject(builder.toUriString(), String.class);
-
-        if (response != null) {
-            JsonParser parser = new JsonParser();
-            return parser.parse(response).getAsJsonObject();
-        }
-
-        return new JsonObject();
+        return stockDTOMapper.map(interval, response);
     }
 
-    public JsonObject getStockDetailsFallback(String symbol, String interval) throws Exception {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty(symbol, "Not Available");
-        return jsonObject;
+    public StockDetailDTO getStockDetailsFallback(String symbol, String interval) throws Exception {
+        return new StockDetailDTO();
     }
 
     @GetMapping("/greeting")

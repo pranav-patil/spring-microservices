@@ -50,18 +50,18 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(ClientDetailsServiceConfigurer client) throws Exception {
 
         client.inMemory()
-                .withClient("register-app")
+                .withClient("register-service")
                 .secret(environment.getProperty("AUTH_SERVICE_PASSWORD"))
                 .authorizedGrantTypes("client_credentials")
                 .authorities("SECURITY_REGISTER")                                   // role of the user
                 .scopes("read")                                                     // access to resources
-                .and()
-                .withClient("trusted-app")
-                .secret(environment.getProperty("AUTH_SERVICE_PASSWORD"))
-                .authorizedGrantTypes("password", "refresh_token")
-                .authorities("APPLICATION_CLIENT")
-                .scopes("read", "write")
                 .resourceIds(resourceId)
+                .and()
+                .withClient("auth-service")
+                .secret(environment.getProperty("AUTH_SERVICE_PASSWORD"))
+                .authorizedGrantTypes("authorization_code", "password", "refresh_token")
+                .authorities("APPLICATION_CLIENT")
+                .scopes("read", "write", "server")
                 .accessTokenValiditySeconds(30)
                 .refreshTokenValiditySeconds(100)
                 .and()
@@ -70,14 +70,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .authorizedGrantTypes("client_credentials", "refresh_token")
                 .authorities("APPLICATION_CLIENT")
                 .scopes("server")
-                .resourceIds("finance-service")
                 .and()
                 .withClient("analytics-service")
                 .secret(environment.getProperty("ANALYTICS_SERVICE_PASSWORD"))
                 .authorizedGrantTypes("client_credentials", "refresh_token")
                 .authorities("APPLICATION_CLIENT")
-                .scopes("server")
-                .resourceIds("analytics-service");
+                .scopes("server");
     }
 
     @Bean

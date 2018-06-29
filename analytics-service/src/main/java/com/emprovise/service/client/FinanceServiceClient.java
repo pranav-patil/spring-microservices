@@ -1,11 +1,9 @@
 package com.emprovise.service.client;
 
 import com.emprovise.service.client.fallback.FinanceServiceClientFallback;
-import com.google.gson.JsonObject;
+import com.emprovise.service.dto.StockDetailDTO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.hateoas.Resource;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +18,8 @@ public interface FinanceServiceClient {
             produces = {
                     MediaType.APPLICATION_JSON_VALUE
             })
-    ResponseEntity<Resource<JsonObject>> getFinanceService(@PathVariable("symbol") String symbol,
-                                                           @PathVariable("interval") String interval);
+    StockDetailDTO getFinanceService(@PathVariable("symbol") String symbol,
+                                     @PathVariable("interval") String interval);
 
     @RequestMapping("/rest/stock/greeting")
     String greeting();

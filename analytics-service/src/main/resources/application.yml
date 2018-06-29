@@ -23,4 +23,18 @@ security:
       grant-type: client_credentials
       scope: server
     resource:
-      userInfoUri: http://localhost:9000/api/auth/user/info
+      userInfoUri: http://localhost:9000/api/auth/user/details
+
+feign:
+  hystrix:
+    enabled:  true
+
+hystrix:
+  shareSecurityContext: true
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 60000
