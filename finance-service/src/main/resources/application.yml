@@ -1,6 +1,9 @@
 spring:
   application:
     name: finance-service
+  cloud:
+    refresh:
+      enabled: false
 
 server:
   port: 8301

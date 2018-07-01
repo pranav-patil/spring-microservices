@@ -28,7 +28,7 @@ repositories {
 }
 
 ext {
-	springCloudVersion = 'Finchley.RC1'
+	springCloudVersion = 'Finchley.RELEASE'
 	mapstructVersion = "1.2.0.Final"
 }
 

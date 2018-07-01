@@ -26,6 +26,9 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+  cloud:
+    refresh:
+      enabled: false
 
 eureka:
   client:
