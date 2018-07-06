@@ -12,12 +12,10 @@ logging:
     org.springframework.security: DEBUG
 
 spring:
-  application:
-    name: auth-service
   datasource:
     url: jdbc:postgresql://localhost:5432/testdb
     username: appuser
-    password: test123
+    password: '{cipher}AQCF0y3wYLvKtMEJE9Bmxcb8N2xRRkMqMl4OdkT2G1pfhhKy9/lpx+8bhaxCiiSnwfCiN2jF4FDCNrywhoWvlB6xcaT1Am79sDuex4J2ukvVQ+Hb4fsdozKB+vh3PT9feKp2LiKTCE/URtomh3Ym0ZtZak9f4vMcg5y/1WDuEshycfA3J2hO2K9UfldS1/nvKCv42v++//t4wJyRLH4C8k6eP7MToiOIzzT4L8IFu+LglBMFOARyvzn1uoaRZWtYr9j7S+vDH5Y7VMO3Uqf82ebqXaIDDaybm5FOqpjlMCUUBqPnKfzwtychM2BftYmc6CmqJuw+PqBRNuRqSwMTwkYxtmdSQnGpkdow4Le3ynpX/vtdzCB64ruSwhbOZnNMZug='
   jpa:
     hibernate:
       ddl-auto: create

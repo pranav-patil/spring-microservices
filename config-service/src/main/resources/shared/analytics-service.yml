@@ -1,12 +1,6 @@
-spring:
-  application:
-    name: finance-service
-  cloud:
-    refresh:
-      enabled: false
 
 server:
-  port: 8301
+  port: 8309
 
 eureka:
   client:
@@ -20,16 +14,13 @@ eureka:
 security:
   oauth2:
     client:
-      clientId: finance-service
-      clientSecret: ${FINANCE_SERVICE_PASSWORD}
+      clientId: analytics-service
+      clientSecret: ${ANALYTICS_SERVICE_PASSWORD}
       accessTokenUri: http://localhost:9000/api/auth/oauth/token
       grant-type: client_credentials
       scope: server
     resource:
       userInfoUri: http://localhost:9000/api/auth/user/details
-
-alphavantage:
-  apikey: FKJEFKEW
 
 feign:
   hystrix:
@@ -41,5 +32,6 @@ hystrix:
     default:
       execution:
         isolation:
+          strategy: SEMAPHORE
           thread:
             timeoutInMilliseconds: 60000

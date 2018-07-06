@@ -1,6 +1,3 @@
-spring:
-  application:
-    name: zuul-server
 
 server:
   port: 9000

@@ -1,9 +1,10 @@
 spring:
-  application:
-    name: analytics-service
+  cloud:
+    refresh:
+      enabled: false
 
 server:
-  port: 8309
+  port: 8301
 
 eureka:
   client:
@@ -17,13 +18,16 @@ eureka:
 security:
   oauth2:
     client:
-      clientId: analytics-service
-      clientSecret: ${ANALYTICS_SERVICE_PASSWORD}
+      clientId: finance-service
+      clientSecret: ${FINANCE_SERVICE_PASSWORD}
       accessTokenUri: http://localhost:9000/api/auth/oauth/token
       grant-type: client_credentials
       scope: server
     resource:
       userInfoUri: http://localhost:9000/api/auth/user/details
+
+alphavantage:
+  apikey: '{cipher}AQBntLyHO6fSQo1vHSUWqBlRZ4Eze4yJ31P3y+IbV7nAMozD3jBc9meTrgetzHHR4c5jERbHwb4RtGCM1TzTmJKYHiScsqItQNbIxbn6yvKFsvcTDLMiPg7dpPekreoS4BdX9hHIqCapZXn5EfqLh/GJRs03t5p/sEM5X25/KaTLiVr54H5C+IJ92VXbB9g3jWfqdz7Gwij3sp8/ElRU5Th79NZN6vVttk+FQN+uV7Ah6mRLWie+p7RPVushbGFshCVEeYUCoNrbEPt1YLn6h/fuW9+Nc3E9/dB+nBw64jQTbL3eUBsMODbIt/1E8PjCHia81r5DcUwJV//QbE8HnL1gNJa21jzv4/AWjm4TK8pCmbQLGKW7sQlr2jCDx77HcS8='
 
 feign:
   hystrix:
@@ -35,6 +39,5 @@ hystrix:
     default:
       execution:
         isolation:
-          strategy: SEMAPHORE
           thread:
             timeoutInMilliseconds: 60000
