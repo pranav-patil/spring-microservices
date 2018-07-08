@@ -1,0 +1,19 @@
+
+server:
+  port: 8989
+
+turbine:
+  appConfig: finance-service,analytics-service
+  aggregator:
+    clusterConfig: FINANCE-SERVICE,ANALYTICS-SERVICE
+
+logging:
+  level:
+    root: INFO
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8302/eureka

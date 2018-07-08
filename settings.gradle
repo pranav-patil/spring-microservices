@@ -7,4 +7,5 @@ include "discovery-service"
 include "finance-service"
 include "gateway-service"
 include "sqldb-service"
+include "monitor-service"
 

@@ -35,3 +35,9 @@ hystrix:
           strategy: SEMAPHORE
           thread:
             timeoutInMilliseconds: 60000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream,info,health

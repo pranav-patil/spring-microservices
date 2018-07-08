@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: monitor-service
+  profiles:
+    active: native
+  cloud:
+    config:
+      uri: http://localhost:8888
+      fail-fast: true
+      username: user
+      password: ${CONFIG_SERVICE_PASSWORD}

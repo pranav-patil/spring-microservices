@@ -1,5 +1,14 @@
-# Config Service
+Config Service
 =============
+
+### Create your config.jks Keystore
+
+Use the Java's built in KeyTool utility to create a Java Key Store (JKS) with a key as below:
+
+    $ cd $JAVA_HOME/bin
+    $ keytool -genkeypair -alias configkey -keyalg RSA \
+            -dname "CN=Web Server,OU=RND,O=Emprovise,L=Chicago,S=IL,C=US" \
+            -keypass ${CONFIG_KEY_PASSWORD} -keystore config.jks -storepass ${CONFIG_KEYSTORE_PASSWORD}
 
 ### Install JCS
 
@@ -16,10 +25,19 @@ To encrypt a password for adding to the YML file as a {cipher}, use the below en
 
 http://localhost:8888/encrypt
 
-Authorization Basic dLKlmkdjv25vbWsxVjW=
+Authorization Basic {BASE64-ENCODED user:CONFIG_SERVICE_PASSWORD}
 
 To verify the encrypted password, use the below decryption service.
 
 http://localhost:8888/decrypt
 
-Authorization Basic dLKlmkdjv25vbWsxVjW=
+Authorization Basic {BASE64-ENCODED user:CONFIG_SERVICE_PASSWORD}
+
+### Running the application
+
+Pass the CONFIG_KEY_PASSWORD and CONFIG_KEYSTORE_PASSWORD created from the above keytool command and new CONFIG_SERVICE_PASSWORD to secure
+access to shared configuration files.
+
+    $ java -jar config-service/build/libs/config-service-0.0.1-SNAPSHOT.jar
+           -DCONFIG_SERVICE_PASSWORD=xxxx -DCONFIG_KEYSTORE_PASSWORD=xxxx -DCONFIG_KEY_PASSWORD=xxxx 
+
