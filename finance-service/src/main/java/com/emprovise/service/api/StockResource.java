@@ -1,5 +1,6 @@
 package com.emprovise.service.api;
 
+import brave.Tracer;
 import com.emprovise.service.config.SSLUtil;
 import com.emprovise.service.dto.StockDetailDTO;
 import com.emprovise.service.mapper.StockDetailDTOMapper;
@@ -23,6 +24,8 @@ public class StockResource {
     private StockDetailDTOMapper stockDTOMapper;
     @Value("${alphavantage.apikey}")
     private String apiKey;
+    @Autowired
+    private Tracer tracer;
 
     private static final String ALPHA_VANTAGE_URL = "https://www.alphavantage.co/query";
     private static final String TIME_SERIES_INTRADAY = "TIME_SERIES_INTRADAY";
@@ -51,7 +54,7 @@ public class StockResource {
 
     @GetMapping("/greeting")
     public String greeting() {
+        tracer.currentSpan().tag("service.greeting", "hello_world");
         return "Hello World";
     }
-
 }

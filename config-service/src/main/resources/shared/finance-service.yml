@@ -1,7 +1,11 @@
 spring:
-  cloud:
-    refresh:
-      enabled: false
+  zipkin:
+    baseUrl: http://localhost:9411/
+    sender:
+      type: kafka
+  sleuth:
+    sampler:
+      probability: 1.0
 
 server:
   port: 8301
@@ -47,3 +51,8 @@ management:
     web:
       exposure:
         include: hystrix.stream,info,health
+
+sample:
+  zipkin:
+    # When enabled=false, traces log to the console. When enabled=true traces send to zipkin
+    enabled: true

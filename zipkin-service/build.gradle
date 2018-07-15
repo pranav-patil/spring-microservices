@@ -1,0 +1,36 @@
+
+description = "Zipkin Stream Server"
+group = 'com.emprovise.service'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+buildscript {
+	ext {
+		zipkinVersion = '2.10.1'
+	}
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath("de.undercouch:gradle-download-task:3.4.3")
+	}
+}
+
+apply plugin: 'de.undercouch.download'
+
+task downloadFile(type: Download) {
+	src "https://search.maven.org/remotecontent?filepath=io/zipkin/java/zipkin-server/$zipkinVersion/zipkin-server-$zipkinVersion-exec.jar"
+	dest "$buildDir/runtime/libs/zipkin-server-$zipkinVersion-exec.jar"
+	overwrite false
+}
+
+task runZipkin(type: JavaExec, dependsOn: downloadFile) {
+	main = "-jar"
+	args = [ "$buildDir/runtime/libs/zipkin-server-$zipkinVersion-exec.jar" ]
+}
+
+task runZipkinKafka(type: JavaExec, dependsOn: downloadFile) {
+	main = "-jar"
+	jvmArgs = [ "-Dzipkin.collector.kafka.bootstrap-servers=127.0.0.1:9092" ]
+	args = [ "$buildDir/runtime/libs/zipkin-server-$zipkinVersion-exec.jar" ]
+}

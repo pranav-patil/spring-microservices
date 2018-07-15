@@ -1,0 +1,95 @@
+
+description = "Kafka Message Broker"
+group = 'com.emprovise.service'
+version = '0.0.1-SNAPSHOT'
+
+buildscript {
+	ext {
+		zookeeperVersion = '3.4.12'
+		scalaVersion = '2.11'
+		kafkaVersion = '1.1.0'
+	}
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath("de.undercouch:gradle-download-task:3.4.3")
+	}
+}
+
+apply plugin: 'de.undercouch.download'
+def pullCommonDir = new File(buildDir, 'repo')
+pullCommonDir.mkdirs()
+
+task downloadFiles(type: Download) {
+	src([
+		"http://apache.mirrors.ionfish.org/zookeeper/zookeeper-${zookeeperVersion}/zookeeper-${zookeeperVersion}.tar.gz",
+		"http://apache.mirrors.ionfish.org/kafka/${kafkaVersion}/kafka_${scalaVersion}-${kafkaVersion}.tgz"
+	])
+
+	dest "${buildDir}/repo"
+	overwrite false
+}
+
+task extractArchives(dependsOn: downloadFiles) {
+	doLast {
+		copy {
+			into new File(buildDir, "libs")
+			pullCommonDir.eachFileRecurse {
+				if (it.path.endsWith(".tar.gz") || it.path.endsWith(".tgz")) {
+					from tarTree(it)
+				}
+			}
+		}
+	}
+}
+
+task copyAndRename(dependsOn: extractArchives) {
+	doLast {
+		if (!file("${buildDir}/libs/zookeeper-${zookeeperVersion}/conf/zoo.cfg").exists()) {
+			println "copying zoo.cfg file..."
+			def buildDirPath = "${buildDir}".replace("\\", "/")
+
+			copy {
+				from "${buildDir}/libs/zookeeper-${zookeeperVersion}/conf/zoo_sample.cfg"
+				into "${buildDir}/libs/zookeeper-${zookeeperVersion}/conf"
+				filter { line -> line.replaceAll("dataDir=/tmp/zookeeper", "dataDir=${buildDirPath}/libs/zookeeper-${zookeeperVersion}/data") }
+				rename { String fileName ->
+					fileName.replace("zoo_sample.cfg", "zoo.cfg")
+				}
+			}
+		}
+
+		def kafkaConfigFile = new File("${buildDir}/libs/kafka_${scalaVersion}-${kafkaVersion}/config/server.properties")
+
+		if (kafkaConfigFile.exists()) {
+			println "modifying kafka config file..."
+			def fileText = kafkaConfigFile.text
+			kafkaConfigFile.withWriter { writer ->
+				writer.print fileText.replace("log.dirs=/tmp/kafka-logs", "log.dirs=${buildDir}\\libs\\kafka_${scalaVersion}-${kafkaVersion}\\kafka-logs")
+			}
+		}
+	}
+}
+
+def KAFKA_HOME = "${buildDir}\\libs\\kafka_${scalaVersion}-${kafkaVersion}"
+
+task runZooKeeper(type: Exec, dependsOn: copyAndRename) {
+	workingDir "${buildDir}/libs/zookeeper-${zookeeperVersion}/bin"
+	commandLine 'cmd', '/c', 'zkServer'
+}
+
+task runKafka(type: Exec, dependsOn: copyAndRename) {
+	workingDir "${KAFKA_HOME}\\bin\\windows"
+	commandLine 'cmd', '/c', "kafka-server-start.bat ..\\..\\config\\server.properties"
+}
+
+task createZipkinTopic(type: Exec) {
+	workingDir "${KAFKA_HOME}\\bin\\windows"
+	commandLine 'cmd', '/c', "kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic zipkin"
+}
+
+task consumeZipkinTopic(type: Exec) {
+	workingDir "${KAFKA_HOME}\\bin\\windows"
+	commandLine 'cmd', '/c', "kafka-console-consumer.bat --zookeeper localhost:2181 --topic zipkin"
+}
