@@ -54,3 +54,6 @@ sample:
   zipkin:
     # When enabled=false, traces log to the console. When enabled=true traces send to zipkin
     enabled: true
+
+logstash:
+  host: localhost

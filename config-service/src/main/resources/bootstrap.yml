@@ -8,3 +8,5 @@ encrypt:
     password: ${CONFIG_KEYSTORE_PASSWORD}
     alias: configkey
     secret: ${CONFIG_KEY_PASSWORD}
+
+info.build.version: ${version?:1.0}

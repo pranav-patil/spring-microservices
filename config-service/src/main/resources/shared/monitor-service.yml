@@ -17,3 +17,6 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://localhost:8302/eureka
+
+logstash:
+  host: localhost

@@ -1,0 +1,149 @@
+
+description = "Elasticsearch, Logstash and Kibana Services"
+group = 'com.emprovise.service'
+version = '0.0.1-SNAPSHOT'
+
+buildscript {
+	ext {
+        elasticsearchVersion = '6.3.1'
+		logstashVersion = '6.3.1'
+		kibanaVersion = '6.3.1'
+		curatorVersion = '5.5.4'
+	}
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath("de.undercouch:gradle-download-task:3.4.3")
+	}
+}
+
+apply plugin: 'de.undercouch.download'
+def pullCommonDir = new File(buildDir, 'repo')
+pullCommonDir.mkdirs()
+
+task downloadElasticStack(type: Download) {
+	src([
+		"https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}.tar.gz",
+		"https://artifacts.elastic.co/downloads/logstash/logstash-${logstashVersion}.tar.gz",
+		"https://artifacts.elastic.co/downloads/kibana/kibana-${kibanaVersion}-windows-x86_64.zip",
+	])
+
+	dest "${buildDir}/repo"
+	overwrite false
+}
+
+task downloadCurator(type: Download) {
+	src "https://packages.elastic.co/curator/5/windows/elasticsearch-curator-${curatorVersion}-amd64.zip"
+	dest "${buildDir}/repo"
+	overwrite false
+}
+
+task extractElasticsearch(dependsOn: downloadElasticStack) {
+	doLast {
+		if(!file("${buildDir}/libs/elasticsearch-${elasticsearchVersion}").exists()) {
+			copy {
+				from tarTree("${pullCommonDir}/elasticsearch-${elasticsearchVersion}.tar.gz")
+				into new File(buildDir, "libs")
+			}
+		}
+	}
+}
+
+task extractLogstash(dependsOn: downloadElasticStack) {
+	doLast {
+		if(!file("${buildDir}/libs/logstash-${logstashVersion}").exists()) {
+			copy {
+				from tarTree("${pullCommonDir}/logstash-${logstashVersion}.tar.gz")
+				into new File(buildDir, "libs")
+			}
+		}
+	}
+}
+
+task extractKibana(dependsOn: downloadElasticStack) {
+	doLast {
+		if(!file("${buildDir}/libs/kibana-${kibanaVersion}-windows-x86_64").exists()) {
+			copy {
+				from zipTree("${pullCommonDir}/kibana-${kibanaVersion}-windows-x86_64.zip")
+				into new File(buildDir, "libs")
+			}
+		}
+	}
+}
+
+task extractCurator(dependsOn: downloadCurator) {
+	doLast {
+		if(!file("${buildDir}/libs/curator-${curatorVersion}-amd64").exists()) {
+			copy {
+				from zipTree("${pullCommonDir}/elasticsearch-curator-${curatorVersion}-amd64.zip")
+				into new File(buildDir, "libs")
+			}
+		}
+	}
+}
+
+def static processFileInplace(file, Closure processText) {
+	def text = file.text
+	file.write(processText(text))
+}
+
+task configElasticsearch(dependsOn: extractElasticsearch) {
+	doLast {
+		def elasticsearchConfigFile = new File("${buildDir}/libs/elasticsearch-${elasticsearchVersion}/config/elasticsearch.yml")
+
+		if (elasticsearchConfigFile.exists()) {
+			println "modifying elasticsearch config file..."
+
+			def elasticsearchDataDir = new File("${buildDir}/libs/elasticsearch-${elasticsearchVersion}", 'data')
+			elasticsearchDataDir.mkdirs()
+
+			def elasticsearchLogDir = new File("${buildDir}/libs/elasticsearch-${elasticsearchVersion}", 'logs')
+			elasticsearchLogDir.mkdirs()
+
+			processFileInplace(elasticsearchConfigFile) { text ->
+				text = text.replace('#network.host: 192.168.0.1', 'network.host: localhost')
+				text = text.replace('#http.port: 9200', 'http.port: 9200')
+				text = text.replace('#path.data: /path/to/data', "path.data: ${elasticsearchDataDir}")
+				text.replace('#path.logs: /path/to/logs', "path.logs: ${elasticsearchLogDir}")
+			}
+		}
+	}
+}
+
+task configKibana(dependsOn: extractKibana) {
+	doLast {
+		def kibanaConfigFile = new File("${buildDir}/libs/kibana-${kibanaVersion}-windows-x86_64/config/kibana.yml")
+
+		if (kibanaConfigFile.exists()) {
+			println "modifying kibana config file..."
+
+			processFileInplace(kibanaConfigFile) { text ->
+				text = text.replace('#server.host: "localhost"', 'server.host: "localhost"')
+				text = text.replace('#server.port: 5601', 'server.port: 5601')
+				text.replace('#elasticsearch.url: "http://localhost:9200"', 'elasticsearch.url: "http://localhost:9200"')
+			}
+		}
+	}
+}
+
+task runElasticsearch(type: Exec, dependsOn: configElasticsearch) {
+	workingDir "${buildDir}/libs/elasticsearch-${elasticsearchVersion}/bin"
+	commandLine 'cmd', '/c', 'elasticsearch.bat'
+}
+
+task runLogstash(type: Exec, dependsOn: extractLogstash) {
+	workingDir "${buildDir}/libs/logstash-${logstashVersion}/bin"
+	commandLine 'cmd', '/c', "logstash.bat -f ${projectDir.path}/config/logstash.conf"
+}
+
+task runKibana(type: Exec, dependsOn: configKibana) {
+	workingDir "${buildDir}/libs/kibana-${kibanaVersion}-windows-x86_64/bin"
+	commandLine 'cmd', '/c', 'kibana.bat'
+}
+
+task purgeWeeklyIndices(type: Exec, dependsOn: extractCurator) {
+	workingDir "${buildDir}/libs/curator-${curatorVersion}-amd64"
+	commandLine 'cmd', '/c', "curator.exe --config ${projectDir.path}/config/curator-config.yml ${projectDir.path}/config/curator-delete-indices.yml"
+}
+

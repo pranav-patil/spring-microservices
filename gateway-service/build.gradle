@@ -32,12 +32,20 @@ dependencies {
 	compile('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
 	compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
 	compile('org.springframework.cloud:spring-cloud-starter-config')
+	compile('org.slf4j:slf4j-api')
+	runtime('net.logstash.logback:logstash-logback-encoder:5.1')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 dependencyManagement {
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+processResources {
+	filesMatching("**/bootstrap.yml") {
+		expand(project.properties)
 	}
 }
 

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="true">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <springProperty scope="context" name="applicationName" source="spring.application.name"/>
+    <springProperty scope="context" name="applicationVersion" source="info.build.version"/>
+    <springProperty scope="context" name="logstashHost" source="logstash.host"/>
+    <springProperty scope="context" name="environment" source="spring.profiles.active"/>
+
+    <property name="FILE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} -- [${applicationName}] -- %5p ${PID:- } --- [%t] [%X{sessionId}] %-40.40logger{39} : %m%n%wex"/>
+
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([${applicationName:-}]){yellow} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <param name="Encoding" value="UTF-8"/>
+        <keepAliveDuration>5 minutes</keepAliveDuration> <!-- Send keep alive message if an event has not occurred for length of the duration -->
+        <reconnectionDelay>10 second</reconnectionDelay> <!-- TCP appender waits for duration (default 30 sec) before reattempting to connect on failure -->
+        <remoteHost>${logstashHost}</remoteHost>
+        <port>5043</port>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <!-- Encoder is required -->
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <mdc/> <!-- MDC variables on the Thread will be written as JSON fields-->
+                <context/> <!--Outputs entries from logback's context -->
+                <logLevel/>
+                <loggerName/>
+                <pattern>
+                    <pattern>
+                        {
+                        "applicationName": "${applicationName}",
+                        "applicationVersion": "${applicationVersion}",
+                        "environment": "${environment}"
+                        }
+                    </pattern>
+                </pattern>
+                <threadName/>
+                <message/>
+                <logstashMarkers/> <!-- Useful so we can add extra information for specific log lines as Markers-->
+                <arguments/> <!--or through StructuredArguments-->
+                <stackTrace>
+                    <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                        <exclude>net\.sf\.cglib\..*</exclude>
+                        <exclude>org\.apache\.coyote\..*</exclude>
+                        <exclude>org\.apache\.catalina\..*</exclude>
+                        <exclude>org\.apache\.tomcat\..*</exclude>
+                        <exclude>org\.springframework\.web\.servlet\..*</exclude>
+                        <exclude>^sun\.reflect\..*\.invoke</exclude>
+                        <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                        <rootCauseFirst>true</rootCauseFirst>
+                        <maxLength>2048</maxLength>
+                        <!--<shortenedClassNameLength>20</shortenedClassNameLength>-->
+                    </throwableConverter>
+                </stackTrace>
+            </providers>
+        </encoder>
+    </appender>
+
+    <springProfile name="!prod">
+        <root level="DEBUG">
+            <appender-ref ref="console"/>
+        </root>
+    </springProfile>
+    <springProfile name="prod">
+        <logger name="org.springframework" level="ERROR" />
+        <root level="OFF">
+            <appender-ref ref="logstash"/>
+        </root>
+    </springProfile>
+
+</configuration>

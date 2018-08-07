@@ -36,3 +36,6 @@ eureka:
       defaultZone: http://localhost:8302/eureka
   instance:
     hostname: localhost
+
+logstash:
+  host: localhost

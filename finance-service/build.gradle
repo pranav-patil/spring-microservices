@@ -42,6 +42,8 @@ dependencies {
 	compile('org.springframework.kafka:spring-kafka')
 	compile('org.springframework.security.oauth:spring-security-oauth2')
 	compile('com.google.code.gson:gson:2.8.4')
+	compile('org.slf4j:slf4j-api')
+	runtime('net.logstash.logback:logstash-logback-encoder:5.1')
 	runtime('com.h2database:h2')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
@@ -49,6 +51,12 @@ dependencies {
 dependencyManagement {
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+processResources {
+	filesMatching("**/bootstrap.yml") {
+		expand(project.properties)
 	}
 }
 

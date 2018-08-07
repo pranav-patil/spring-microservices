@@ -1,11 +1,11 @@
 spring:
   application:
     name: analytics-service
-  profiles:
-    active: native
   cloud:
     config:
       uri: http://localhost:8888
       fail-fast: true
       username: user
       password: ${CONFIG_SERVICE_PASSWORD}
+
+info.build.version: ${version?:1.0}
