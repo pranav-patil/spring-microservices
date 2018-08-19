@@ -2,35 +2,27 @@
 server:
   port: 9000
 
-zuul:
-  prefix: /api
-  ignoredServices: '*'
-  host:
-    connect-timeout-millis: 20000
-    socket-timeout-millis: 20000
-  routes:
-    auth:
-        path: /auth/**
-        serviceId: auth-service
-        sensitiveHeaders: Cookie,Set-Cookie
-    analytics:
-        path: /analytics/**
-        serviceId: analytics-service
-        sensitiveHeaders: Cookie,Set-Cookie
-
-hystrix:
-  command:
-    default:
-      execution:
-        isolation:
-          thread:
-            timeoutInMilliseconds: 20000
-
-ribbon:
-  ReadTimeout: 20000
-  ConnectTimeout: 20000
-  eureka:
-    enabled: true
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+      - id: auth-service
+        uri: lb://auth-service
+        predicates:
+        - Path=/api/auth/**
+        filters:
+        - StripPrefix=2
+        - RemoveRequestHeader=Cookie, Set-Cookie
+      - id: analytics-service
+        uri: lb://analytics-service
+        predicates:
+        - Path=/api/analytics/**
+        filters:
+        - StripPrefix=2
+        - RemoveRequestHeader=Cookie, Set-Cookie
 
 eureka:
   client:
