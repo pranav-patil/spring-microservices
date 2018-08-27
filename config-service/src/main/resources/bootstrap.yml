@@ -9,4 +9,3 @@ encrypt:
     alias: configkey
     secret: ${CONFIG_KEY_PASSWORD}
 
-info.build.version: ${version?:1.0}

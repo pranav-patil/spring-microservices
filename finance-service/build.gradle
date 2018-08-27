@@ -55,7 +55,7 @@ dependencyManagement {
 }
 
 processResources {
-	filesMatching("**/bootstrap.yml") {
+	filesMatching("**/application.properties") {
 		expand(project.properties)
 	}
 }

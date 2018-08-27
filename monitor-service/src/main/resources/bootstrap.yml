@@ -8,4 +8,3 @@ spring:
       username: user
       password: ${CONFIG_SERVICE_PASSWORD}
 
-info.build.version: ${version?:1.0}

@@ -1,7 +1,9 @@
 Monitor Service
 =============
 
-### Running the application
+Monitor service provides [Hystrix Dashboard](https://github.com/Netflix-Skunkworks/hystrix-dashboard), which is a dashboard for monitoring micro services using Hystrix circuit breakers. The Hystrix Dashboard displays the health of each circuit breaker in an efficient manner. The [Netflix Turbine Stream Aggregator](https://github.com/Netflix/Turbine) connects to Hystrix-enabled servers and aggregates realtime streams from them.
+
+### Running the Monitor Service
 
 Pass the CONFIG_SERVICE_PASSWORD from the [config-service](/../config-service/README.md) to access monitor-service.yml configuration file.
 

@@ -1,5 +1,7 @@
 Config Service
 =============
+ 
+[Configuration Service](https://cloud.spring.io/spring-cloud-config/) handles the configurations for all of the services through a simple point-to-point service call to retrieve those configurations. The configurations for micro services is stored in an environment and not as part of the project. It is a central place to manage external properties for applications across all environments. Configuration service ideally has a dedicated Git repository for the configuration of the corresponding environment (dev/test/production).
 
 ### Create your config.jks Keystore
 
@@ -33,7 +35,7 @@ http://localhost:8888/decrypt
 
 Authorization Basic {BASE64-ENCODED user:CONFIG_SERVICE_PASSWORD}
 
-### Running the application
+### Running the Config Service
 
 Pass the CONFIG_KEY_PASSWORD and CONFIG_KEYSTORE_PASSWORD created from the above keytool command and new CONFIG_SERVICE_PASSWORD to secure
 access to shared configuration files.

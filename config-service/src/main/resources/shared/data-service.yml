@@ -1,0 +1,34 @@
+
+server:
+  port: 8300
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://127.0.0.1/test
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testdb
+    username: appuser
+    password: '{cipher}AQCF0y3wYLvKtMEJE9Bmxcb8N2xRRkMqMl4OdkT2G1pfhhKy9/lpx+8bhaxCiiSnwfCiN2jF4FDCNrywhoWvlB6xcaT1Am79sDuex4J2ukvVQ+Hb4fsdozKB+vh3PT9feKp2LiKTCE/URtomh3Ym0ZtZak9f4vMcg5y/1WDuEshycfA3J2hO2K9UfldS1/nvKCv42v++//t4wJyRLH4C8k6eP7MToiOIzzT4L8IFu+LglBMFOARyvzn1uoaRZWtYr9j7S+vDH5Y7VMO3Uqf82ebqXaIDDaybm5FOqpjlMCUUBqPnKfzwtychM2BftYmc6CmqJuw+PqBRNuRqSwMTwkYxtmdSQnGpkdow4Le3ynpX/vtdzCB64ruSwhbOZnNMZug='
+    testWhileIdle: true
+    validationQuery: SELECT 1
+  jpa:
+    show: true
+    hibernate:
+      ddl-auto: update
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        dialect: org.hibernate.dialect.PostgresPlusDialect
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8302/eureka
+  instance:
+    hostname: localhost

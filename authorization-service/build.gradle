@@ -42,7 +42,7 @@ dependencies {
 	runtime('net.logstash.logback:logstash-logback-encoder:5.1')
 	runtime('org.postgresql:postgresql:42.2.2')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
-    apt "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+	apt "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 }
 
 dependencyManagement {
@@ -52,7 +52,7 @@ dependencyManagement {
 }
 
 processResources {
-	filesMatching("**/bootstrap.yml") {
+	filesMatching("**/application.properties") {
 		expand(project.properties)
 	}
 }
