@@ -8,3 +8,5 @@ spring:
       username: user
       password: ${CONFIG_SERVICE_PASSWORD}
 
+logstash:
+  host: localhost

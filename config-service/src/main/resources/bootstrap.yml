@@ -9,3 +9,5 @@ encrypt:
     alias: configkey
     secret: ${CONFIG_KEY_PASSWORD}
 
+logstash:
+  host: localhost
