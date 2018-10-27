@@ -38,7 +38,7 @@ When a client application wants access to the resources of a resource owner host
 * Download latest [Windows PostgreSQL Installer](https://www.postgresql.org/download/windows/) and follow windows installation steps.
 * Alternatively, can download [Windows PostgreSQL Binary Archive](https://www.enterprisedb.com/download-postgresql-binaries) and extract the zip file. POSTGRE_SQL_HOME is the path to the unzipped PostgreSQL **pgsql** directory.
 * Run the below [pg_ctl](https://www.postgresql.org/docs/9.5/static/app-pg-ctl.html) utility commands to register PostGreSQL as service in POSTGRE_SQL_HOME/pgsql/bin directory.
-* Create a new user named **appuser** and new database named **testdb** using below **psql** commands. The user and password are added to auth-service.yml configuration file as spring.datasource.username (and password).
+* Create a new user named **appuser** and new database named **testdb** using below **psql** commands. The user and password are added to authorization-service.yml configuration file as spring.datasource.username (and password).
 * PostGreSQL runs on default port 5432.
 
 
@@ -55,7 +55,7 @@ When a client application wants access to the resources of a resource owner host
 
 ### Running the Authorization Service
 
-Pass the new AUTH_SERVICE_PASSWORD, CONFIG_SERVICE_PASSWORD from the [config-service](/../config-service/README.md) to access auth-service.yml configuration file, corresponding passwords FINANCE_SERVICE_PASSWORD for finance-service and ANALYTICS_SERVICE_PASSWORD for analytics-service respectively.
+Pass the new AUTH_SERVICE_PASSWORD, CONFIG_SERVICE_PASSWORD from the [config-service](/../config-service/README.md) to access authorization-service.yml configuration file, corresponding passwords FINANCE_SERVICE_PASSWORD for finance-service and ANALYTICS_SERVICE_PASSWORD for analytics-service respectively.
 
     $ java -jar authorization-service/build/libs/authorization-service-0.0.1-SNAPSHOT.jar
            -DAUTH_SERVICE_PASSWORD=secret -DFINANCE_SERVICE_PASSWORD=xxxx 
@@ -111,7 +111,7 @@ Pass the new AUTH_SERVICE_PASSWORD, CONFIG_SERVICE_PASSWORD from the [config-ser
 
     HTTP Method: POST  
     http://localhost:9000/api/auth/oauth/token?grant_type=password&username=william&password=secret  
-    Authorization: Basic {BASE64-ENCODED auth-service:AUTH_SERVICE_PASSWORD}  
+    Authorization: Basic {BASE64-ENCODED authorization-service:AUTH_SERVICE_PASSWORD}  
     Accept: application/json  
     Response:  
     

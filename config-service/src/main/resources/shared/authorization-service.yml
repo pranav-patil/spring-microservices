@@ -1,7 +1,7 @@
 security:
   oauth2:
     client:
-      clientId: auth-service
+      clientId: authorization-service
 
 server:
 #  servlet:

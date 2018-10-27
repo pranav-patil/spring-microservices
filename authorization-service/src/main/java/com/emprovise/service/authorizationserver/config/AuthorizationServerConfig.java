@@ -57,7 +57,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .scopes("read")                                                     // access to resources
                 .resourceIds(resourceId)
                 .and()
-                .withClient("auth-service")
+                .withClient("authorization-service")
                 .secret(environment.getProperty("AUTH_SERVICE_PASSWORD"))
                 .authorizedGrantTypes("authorization_code", "password", "refresh_token")
                 .authorities("APPLICATION_CLIENT")
