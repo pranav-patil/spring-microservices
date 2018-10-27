@@ -29,7 +29,7 @@
         <remoteHost>${logstashHost}</remoteHost>
         <port>5043</port>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
+            <level>WARN</level>
         </filter>
         <!-- Encoder is required -->
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
@@ -78,9 +78,7 @@
         </root>
     </springProfile>
     <springProfile name="production">
-        <logger name="org.hibernate" level="ERROR" />
-        <logger name="org.springframework" level="ERROR" />
-        <root level="OFF">
+        <root level="WARN">
             <appender-ref ref="logstash"/>
         </root>
     </springProfile>
