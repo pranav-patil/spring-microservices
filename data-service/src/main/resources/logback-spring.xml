@@ -72,12 +72,12 @@
         </encoder>
     </appender>
 
-    <springProfile name="!prod">
+    <springProfile name="!production">
         <root level="DEBUG">
             <appender-ref ref="console"/>
         </root>
     </springProfile>
-    <springProfile name="prod">
+    <springProfile name="production">
         <logger name="org.hibernate" level="ERROR" />
         <logger name="org.springframework" level="ERROR" />
         <root level="OFF">
