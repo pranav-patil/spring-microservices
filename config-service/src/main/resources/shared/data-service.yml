@@ -23,6 +23,8 @@ spring:
           lob:
             non_contextual_creation: true
         dialect: org.hibernate.dialect.PostgresPlusDialect
+  batch:
+    initialize-schema: always
 
 eureka:
   client:
