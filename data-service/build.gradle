@@ -49,6 +49,7 @@ dependencies {
 	compile('org.springframework.security:spring-security-config')
 	compile "org.mapstruct:mapstruct-jdk8:${mapstructVersion}"
 	compile('org.slf4j:slf4j-api')
+	compile('de.codecentric:spring-boot-admin-starter-client:2.0.4')
 	runtime('net.logstash.logback:logstash-logback-encoder:5.1')
 	runtime('org.postgresql:postgresql')
 	testCompile('org.springframework.boot:spring-boot-starter-test')

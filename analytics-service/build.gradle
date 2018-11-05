@@ -47,6 +47,7 @@ dependencies {
 	compile('org.springframework.security.oauth:spring-security-oauth2')
 	compile('com.google.code.gson:gson:2.8.4')
 	compile('org.slf4j:slf4j-api')
+	compile('de.codecentric:spring-boot-admin-starter-client:2.0.4')
 	runtime('net.logstash.logback:logstash-logback-encoder:5.1')
 	runtime('com.h2database:h2')
 	testCompile('org.springframework.boot:spring-boot-starter-test')

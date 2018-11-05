@@ -1,0 +1,19 @@
+
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8989/admin
+        username: admin
+        password: '{cipher}AQCMR8djWp03QoYWIURUqeZg7ndoOwVIg7AsODDOhxSeOJaF+rwhbL393eR5sk083Efx9IDnyxx7ek6L8qUmbwxlDlahFqWtcBHqgBSv8FB+bTzaje1jnspPodjaGy1KStvRdq6PAYuvljMenOEsIzm1mu8YiacDd7Me8yg4BjsMgGz+5qVnea3AfxueOnG4is4bFj4Eff7CHFQCnUVeWxxHFsR4Dcia0Cki4Q9Q84e7jvCRrvSO5nU9RKTogSAzct4owjt2pp8ejFORcGpytH22rlUXCYx2KdOVNY224xwennrRnPyiYr0eC5Qm2MyW6GR5iYyp7pZ42OALskIshYiJh771VjyPSsk5zPV0l1pebd4FNRYCf36U7IVirA5t6Bc='
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: false
+    health:
+      show-details: ALWAYS
