@@ -1,6 +1,6 @@
 package com.emprovise.service.client;
 
-import com.emprovise.service.client.fallback.FinanceServiceClientFallback;
+import com.emprovise.service.client.fallback.FinanceServiceFallbackFactory;
 import com.emprovise.service.dto.StockDetailDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Component
-@FeignClient(value = "finance-service", fallback = FinanceServiceClientFallback.class)
+@FeignClient(value = "finance-service", fallbackFactory = FinanceServiceFallbackFactory.class)
 public interface FinanceServiceClient {
 
     @RequestMapping(value = "/rest/stock/symbol/{symbol}/interval/{interval}",

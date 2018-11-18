@@ -3,8 +3,8 @@ package com.emprovise.service.dataservice.batch;
 import com.emprovise.service.dataservice.dto.StockDetail;
 import com.emprovise.service.dataservice.resource.StockResource;
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -39,7 +39,7 @@ public class JobConfiguration {
     private SimpleJobLauncher jobLauncher;
     @Autowired
     private StockResource stockResource;
-    private static Log logger = LogFactory.getLog(JobConfiguration.class);
+    private static Logger logger = LoggerFactory.getLogger(JobConfiguration.class);
 
     @Bean
     public ResourcelessTransactionManager transactionManager() {

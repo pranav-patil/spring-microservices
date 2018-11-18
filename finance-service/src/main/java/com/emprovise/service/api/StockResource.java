@@ -5,6 +5,8 @@ import com.emprovise.service.config.SSLUtil;
 import com.emprovise.service.dto.StockDetailDTO;
 import com.emprovise.service.mapper.StockDetailDTOMapper;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +31,7 @@ public class StockResource {
 
     private static final String ALPHA_VANTAGE_URL = "https://www.alphavantage.co/query";
     private static final String TIME_SERIES_INTRADAY = "TIME_SERIES_INTRADAY";
+    private static Logger logger = LoggerFactory.getLogger(StockResource.class);
 
 //    @PreAuthorize("#oauth2.hasScope('server')")
     @HystrixCommand(commandKey = "getStockDetails", fallbackMethod = "getStockDetailsFallback")
@@ -48,7 +51,8 @@ public class StockResource {
         return stockDTOMapper.map(interval, response);
     }
 
-    public StockDetailDTO getStockDetailsFallback(String symbol, String interval) throws Exception {
+    public StockDetailDTO getStockDetailsFallback(String symbol, String interval, Throwable cause) throws Exception {
+        logger.error("Error in fetching stock details", cause);
         return new StockDetailDTO();
     }
 
