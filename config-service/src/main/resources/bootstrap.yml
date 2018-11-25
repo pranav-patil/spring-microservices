@@ -11,3 +11,10 @@ encrypt:
 
 logstash:
   host: localhost
+
+---
+spring:
+  profiles: production
+
+logstash:
+  host: elastic-stack

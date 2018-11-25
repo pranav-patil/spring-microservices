@@ -4,12 +4,7 @@ security:
       clientId: authorization-service
 
 server:
-#  servlet:
-#    contextPath: /auth
   port: 1000
-logging:
-  level:
-    org.springframework.security: DEBUG
 
 spring:
   datasource:
@@ -36,3 +31,16 @@ eureka:
       defaultZone: http://localhost:8302/eureka
   instance:
     hostname: localhost
+
+---
+spring:
+  profiles: production
+  datasource:
+    url: jdbc:postgresql://postgres-service:5432/testdb
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-service:8302/eureka
+  instance:
+    preferIpAddress: true

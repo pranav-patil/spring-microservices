@@ -5,7 +5,9 @@ server:
 spring:
   data:
     mongodb:
-      uri: mongodb://127.0.0.1/test
+      host: 127.0.0.1
+      port: 27017
+      database: testdb
   datasource:
     url: jdbc:postgresql://localhost:5432/testdb
     username: appuser
@@ -34,3 +36,24 @@ eureka:
       defaultZone: http://localhost:8302/eureka
   instance:
     hostname: localhost
+
+---
+spring:
+  profiles: production
+  data:
+    mongodb:
+      host: mongodb-service
+      port: 27017
+      database: testdb
+      username: appuser
+      password: test123
+  datasource:
+    url: jdbc:postgresql://postgres-service:5432/testdb
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-service:8302/eureka
+  instance:
+    preferIpAddress: true
+

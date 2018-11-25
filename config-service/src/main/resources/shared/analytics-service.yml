@@ -54,3 +54,25 @@ sample:
   zipkin:
     # When enabled=false, traces log to the console. When enabled=true traces send to zipkin
     enabled: true
+
+---
+spring:
+  profiles: production
+  zipkin:
+    baseUrl: http://zipkin-service:9411/
+  kafka:
+    bootstrap-servers: kafka-broker:9092
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-service:8302/eureka
+  instance:
+    preferIpAddress: true
+
+security:
+  oauth2:
+    client:
+      accessTokenUri: http://gateway-service:9000/api/auth/oauth/token
+    resource:
+      userInfoUri: http://gateway-service:9000/api/auth/user/details

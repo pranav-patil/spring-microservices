@@ -10,3 +10,13 @@ spring:
 
 logstash:
   host: localhost
+
+---
+spring:
+  profiles: production
+  cloud:
+    config:
+      uri: http://config-service:8888
+
+logstash:
+  host: elastic-stack

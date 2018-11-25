@@ -9,3 +9,14 @@ eureka:
       waitTimeInMsWhenSyncEmpty: 0
     serviceUrl:
       defaultZone: http://localhost:8302/eureka
+
+---
+spring:
+  profiles: production
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-service:8302/eureka
+  instance:
+    preferIpAddress: true

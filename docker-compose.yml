@@ -1,0 +1,257 @@
+version: '3.5'
+services:
+
+  postgres-service:
+    container_name: postgres-service
+    image: postgres:11
+    ports:
+      - "5432:5432"
+    networks:
+      - net
+    restart: always
+    environment:
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_DB: testdb
+    
+  mongodb-service:
+    container_name: mongodb-service
+    image: mongo:4.0
+    ports:
+      - "27017:27017"
+    networks:
+      - net
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_INITDB_ROOT_PASSWORD
+      MONGO_INITDB_DATABASE: testdb
+    volumes:
+      - ./data-service/config/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - /tmp/data/mongo:/data/db
+
+  zookeeper:
+    container_name: zookeeper
+    image: zookeeper:3.4.12
+    ports:
+      - "2181:2181"
+    networks:
+      - net
+    restart: always
+    environment:
+      zk_id: "1"
+
+  kafka-broker:
+    container_name: kafka-broker
+    image: wurstmeister/kafka:2.11-2.0.1
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    networks:
+      - net
+    environment:
+      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://_{HOSTNAME_COMMAND}:9092
+      KAFKA_LISTENERS: PLAINTEXT://:9092
+      KAFKA_CREATE_TOPICS: zipkin:1:1
+      KAFKA_BROKER_ID: 1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  elastic-stack:
+    container_name: elastic-stack
+    build: ./elastic-stack
+    ports:
+      - "5601:5601"
+      - "9200:9200"
+      - "5043:5043"
+    networks:
+      - net
+    environment:
+      - MAX_MAP_COUNT=262145
+      - ELASTICSEARCH_START=1
+      - LOGSTASH_START=1
+      - KIBANA_START=1
+
+  zipkin-service:
+    container_name: zipkin-service
+    image: openzipkin/zipkin:2.10.1
+    environment:
+      STORAGE_TYPE: mem
+      KAFKA_BOOTSTRAP_SERVERS: kafka-broker:9092
+    restart: always
+    depends_on:
+      - kafka-broker
+    ports:
+      - "9411:9411"
+    networks:
+      - net
+
+  config-service:
+    container_name: config-service
+    environment:
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+      CONFIG_KEYSTORE_PASSWORD: $CONFIG_KEYSTORE_PASSWORD
+      CONFIG_KEY_PASSWORD: $CONFIG_KEY_PASSWORD
+    build: ./config-service
+    restart: always
+    depends_on:
+      - elastic-stack
+    ports:
+      - "8888:8888"
+    networks:
+      - net
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  discovery-service:
+    container_name: discovery-service
+    environment:
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+    build: ./discovery-service
+    restart: always
+    depends_on:
+      - config-service
+      - elastic-stack
+    ports:
+      - "8302:8302"
+    networks:
+      - net
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  authorization-service:
+    container_name: authorization-service
+    environment:
+      AUTH_SERVICE_PASSWORD: $AUTH_SERVICE_PASSWORD
+      FINANCE_SERVICE_PASSWORD: $FINANCE_SERVICE_PASSWORD
+      ANALYTICS_SERVICE_PASSWORD: $ANALYTICS_SERVICE_PASSWORD
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+    build: ./authorization-service
+    restart: always
+    depends_on:
+      - postgres-service
+      - config-service
+      - discovery-service
+      - elastic-stack
+    ports:
+      - "1000:1000"
+    networks:
+      - net
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  finance-service:
+    container_name: finance-service
+    environment:
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+      FINANCE_SERVICE_PASSWORD: $FINANCE_SERVICE_PASSWORD
+    build: ./finance-service
+    restart: always
+    depends_on:
+      - config-service
+      - discovery-service
+      - authorization-service
+      - elastic-stack
+    ports:
+      - "8301:8301"
+    networks:
+      - net
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  analytics-service:
+    container_name: analytics-service
+    environment:
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+      ANALYTICS_SERVICE_PASSWORD: $ANALYTICS_SERVICE_PASSWORD
+    build: ./analytics-service
+    restart: always
+    depends_on:
+      - config-service
+      - discovery-service
+      - authorization-service
+      - elastic-stack
+    ports:
+      - "8309:8309"
+    networks:
+      - net
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  gateway-service:
+    container_name: gateway-service
+    environment:
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+    build: ./gateway-service
+    restart: always
+    depends_on:
+      - config-service
+      - discovery-service
+      - analytics-service
+      - elastic-stack
+    ports:
+      - "9000:9000"
+    networks:
+      - net
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+    
+  data-service:
+    container_name: data-service
+    environment:
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+    build: ./data-service
+    restart: always
+    depends_on:
+      - postgres-service
+      - mongodb-service
+      - config-service
+      - discovery-service
+      - elastic-stack
+    ports:
+      - "8300:8300"
+    networks:
+      - net
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  monitor-service:
+    container_name: monitor-service
+    environment:
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+    build: ./monitor-service
+    restart: always
+    depends_on:
+      - config-service
+      - discovery-service
+      - elastic-stack
+    ports:
+      - "8989:8989"
+    networks:
+      - net
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+networks:
+  net:
+    driver: bridge

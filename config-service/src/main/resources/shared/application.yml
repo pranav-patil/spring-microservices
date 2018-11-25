@@ -17,3 +17,11 @@ management:
       enabled: false
     health:
       show-details: ALWAYS
+
+---
+spring:
+  profiles: production
+  boot:
+    admin:
+      client:
+        url: http://monitor-service:8989/admin

@@ -7,16 +7,14 @@ turbine:
   aggregator:
     clusterConfig: FINANCE-SERVICE,ANALYTICS-SERVICE
 
-logging:
-  level:
-    root: INFO
-
 eureka:
   client:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://localhost:8302/eureka
+  instance:
+    hostname: localhost
 
 spring:
   security:
@@ -29,3 +27,14 @@ spring:
       client:
         enabled: false
         auto-registration: false
+
+---
+spring:
+  profiles: production
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-service:8302/eureka
+  instance:
+    preferIpAddress: true
