@@ -24,6 +24,11 @@ The spring micro services showcase contains the following services in action:
 * [Monitor Service](monitor-service/README.md): Monitor service gathers hystrix circuit breaker data from finance and analytics services, and displays the [Hystrix Dashboard](https://github.com/Netflix-Skunkworks/hystrix-dashboard). It also includes [Spring Boot® Admin](https://github.com/codecentric/spring-boot-admin) dashboard which helps to monitor, manage and configure spring microservices.
 
 
+
+   ![Spring Microservices](images/spring-microservices.png)
+
+
+
 ## Setup and Running on Docker (Single Instance)
 
 * Run the [ubuntu-docker-setup.sh](ubuntu-docker-setup.sh) script to setup java, gradle, docker and docker-compose. The script is specific to Ubuntu Bionic operating system but can be used as setup reference for other Linux systems as well.
@@ -49,9 +54,13 @@ The spring micro services showcase contains the following services in action:
 
         $ sudo -E docker-compose up -d
 
+### Testing Microservices using Postman 
+
+[Postman](https://www.getpostman.com/) is a client to test various HTTP services. [Download Postman](https://www.getpostman.com/downloads/) and install in your system.
+Open postman application, go to `File` -> `Import` opening import dialog. Click on `Choose Files` to import and select the [spring-microservices.postman_collection.json](spring-microservices.postman_collection.json) from the repository.
+After import you see the collection `spring-microservices` on the left-side menu. Referring the [postman docs](https://learning.getpostman.com/docs/postman/environments_and_globals/manage_environments/), create environment, create variables namely `hostname` and select the environment before sending service requests.
+
 ### Docker Setup Notes 
 
 * The above **docker-compose up -d** command would create all the containers and start all the services parallelly in background. Since virtually all the services are dependent on few core services namely postgres-service, config-service, discovery-service and authorization-service, this would cause other services to fail and restart again until they establish successful connections with core services. 
 * It is important to note that docker-compose detects changes in the environment variables compared to existing service instance running with different environment variables. On launching a new service which depends on an already existing service whose environment variables are altered, docker-compose would first trigger recreation of existing (dependent) service instance with the current system environment variables before creating the launched instance.
- 
- 

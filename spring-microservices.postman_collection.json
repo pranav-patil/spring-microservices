@@ -1,0 +1,514 @@
+{
+	"info": {
+		"_postman_id": "19c31da7-c699-4112-8ba7-bba1b871f258",
+		"name": "spring-microservices",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://{{hostname}}:9000/api/auth/oauth/token?grant_type=client_credentials&client_id=register-service",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c94b1530-d012-4531-8968-fb15033ad616",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"token\", jsonData.access_token);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "register-service",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "secret",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "sdddddddddddd"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://{{hostname}}:9000/api/auth/oauth/token?grant_type=client_credentials&client_id=register-service",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "9000",
+					"path": [
+						"api",
+						"auth",
+						"oauth",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials"
+						},
+						{
+							"key": "client_id",
+							"value": "register-service"
+						}
+					]
+				},
+				"description": "Initial Client Credentials"
+			},
+			"response": []
+		},
+		{
+			"name": "http://{{hostname}}:9000/api/auth/user/register",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"disabled": false
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n  \"username\" : \"william\",\r\n  \"password\" : \"abc123\",\r\n  \"firstName\" : \"William\",\r\n  \"lastName\" : \"Brian\",\r\n  \"email\" : \"williamb@gmail.com\"\r\n}"
+				},
+				"url": {
+					"raw": "http://{{hostname}}:9000/api/auth/user/register",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "9000",
+					"path": [
+						"api",
+						"auth",
+						"user",
+						"register"
+					]
+				},
+				"description": "Register New User"
+			},
+			"response": []
+		},
+		{
+			"name": "http://{{hostname}}:9000/api/auth/oauth/token?grant_type=password&username=william&password=abc123",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "authorization-service",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "secret",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://{{hostname}}:9000/api/auth/oauth/token?grant_type=password&username=william&password=abc123",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "9000",
+					"path": [
+						"api",
+						"auth",
+						"oauth",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "password"
+						},
+						{
+							"key": "username",
+							"value": "william"
+						},
+						{
+							"key": "password",
+							"value": "abc123"
+						}
+					]
+				},
+				"description": "Grant User Acess - Not Used"
+			},
+			"response": []
+		},
+		{
+			"name": "http://{{hostname}}:9000/api/auth/user/details",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "b6dfb133-4485-4159-ad26-f905da912c35",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://{{hostname}}:9000/api/auth/user/details",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "9000",
+					"path": [
+						"api",
+						"auth",
+						"user",
+						"details"
+					]
+				},
+				"description": "Get User Details"
+			},
+			"response": []
+		},
+		{
+			"name": "http://{{hostname}}:9000/api/auth/oauth/token?grant_type=client_credentials&client_id=analytics-service",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "26b6ca79-af11-4668-bc74-fcabc4ff3257",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"token\", jsonData.access_token);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "xyz123",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "analytics-service",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://{{hostname}}:9000/api/auth/oauth/token?grant_type=client_credentials&client_id=analytics-service",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "9000",
+					"path": [
+						"api",
+						"auth",
+						"oauth",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials"
+						},
+						{
+							"key": "client_id",
+							"value": "analytics-service"
+						}
+					]
+				},
+				"description": "Get Auth Code for analytics-service"
+			},
+			"response": []
+		},
+		{
+			"name": "http://{{hostname}}:9000/api/analytics/finance/stock/MSFT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9d2bb04e-8bce-4a3f-9d8f-4662c4349812",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://{{hostname}}:9000/api/analytics/finance/stock/MSFT",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "9000",
+					"path": [
+						"api",
+						"analytics",
+						"finance",
+						"stock",
+						"MSFT"
+					]
+				},
+				"description": "Access Analytics Stock Service"
+			},
+			"response": []
+		},
+		{
+			"name": "http://{{hostname}}:9000/api/analytics/finance/stock/summary/nAVxyiTtxM",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://{{hostname}}:9000/api/analytics/finance/stock/summary/ARxcWOddOp",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "9000",
+					"path": [
+						"api",
+						"analytics",
+						"finance",
+						"stock",
+						"summary",
+						"ARxcWOddOp"
+					]
+				},
+				"description": "Access Analytics Stock Summary Details Service"
+			},
+			"response": []
+		},
+		{
+			"name": "http://{{hostname}}:8888/encrypt",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "config123",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "admin123"
+				},
+				"url": {
+					"raw": "http://{{hostname}}:8888/encrypt",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "8888",
+					"path": [
+						"encrypt"
+					]
+				},
+				"description": "Encryption Service"
+			},
+			"response": []
+		},
+		{
+			"name": "http://{{hostname}}:8301/rest/stock/symbol/MSFT/interval/60min",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "a26a3af8-3a4c-45e5-b522-47f13a6acf16",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://{{hostname}}:8301/rest/stock/symbol/MSFT/interval/60min",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "8301",
+					"path": [
+						"rest",
+						"stock",
+						"symbol",
+						"MSFT",
+						"interval",
+						"60min"
+					]
+				},
+				"description": "Access Finance Internal Stock Service"
+			},
+			"response": []
+		},
+		{
+			"name": "http://{{hostname}}:9000/api/analytics/finance/greeting",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "2916a949-e11c-45ba-8d3c-e1f787a402fe",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://{{hostname}}:9000/api/analytics/finance/greeting",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "9000",
+					"path": [
+						"api",
+						"analytics",
+						"finance",
+						"greeting"
+					]
+				},
+				"description": "Access Analytics Greetings Service"
+			},
+			"response": []
+		}
+	]
+}
