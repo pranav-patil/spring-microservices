@@ -62,4 +62,5 @@ Optionally **spring.profiles.active** can be passed with value **production** wh
 
 ### Notes
 
+* [Install MongoDB Shell](Mongo_Shell.md) to view the collections and records within MongoDB database. 
 * Data service uses [MapStruct](http://mapstruct.org/) for mapping between domain object to DTO object. MapStruct requires [mapstruct-processor](https://github.com/mapstruct/mapstruct) to be configured in gradle to generate the corresponding Mapper implementation for defined MapStruct interface. Hence it is highly recommended to **run gradle build before running data-service** to avoid Spring NoSuchBeanDefinitionException for MapStruct autowirings.     
