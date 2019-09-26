@@ -7,9 +7,9 @@ Finance service uses [Alphavantage API](https://www.alphavantage.co/documentatio
    
 ### Running the Finance Service
 
-The **CONFIG_SERVICE_PASSWORD** is a required parameter to run finance-service as it enables to access finance-service.yml configuration file from the [config-service](/../config-service/README.md).
-The **FINANCE_SERVICE_PASSWORD** is the client secret required to access oauth2 token for client id finance-service. Use the same **FINANCE_SERVICE_PASSWORD** configured in [authorization-service](/../authorization-service/README.md).
-Optionally **spring.profiles.active** can be passed with value **production** which enables logback to send all logs to [Elastic Stack](/../elastic-stack/README.md) instead of logging in the console by default.
+The **CONFIG_SERVICE_PASSWORD** is a required parameter to run finance-service as it enables to access finance-service.yml configuration file from the [config-service](../config-service/README.md).
+The **FINANCE_SERVICE_PASSWORD** is the client secret required to access oauth2 token for client id finance-service. Use the same **FINANCE_SERVICE_PASSWORD** configured in [authorization-service](../authorization-service/README.md).
+Optionally **spring.profiles.active** can be passed with value **production** which enables logback to send all logs to [Elastic Stack](../elastic-stack/README.md) instead of logging in the console by default.
 
     $ java -jar finance-service/build/libs/finance-service-0.0.1-SNAPSHOT.jar
            -DCONFIG_SERVICE_PASSWORD=xxxx

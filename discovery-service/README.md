@@ -10,8 +10,8 @@ With Netflix Eureka each client can simultaneously act as a server, to replicate
    
 ### Running the Discovery Service
 
-The **CONFIG_SERVICE_PASSWORD** is a required parameter to run discovery-service as it enables to access discovery-service.yml configuration file from the [config-service](/../config-service/README.md).
-Optionally **spring.profiles.active** can be passed with value **production** which enables logback to send all logs to [Elastic Stack](/../elastic-stack/README.md) instead of logging in the console by default.
+The **CONFIG_SERVICE_PASSWORD** is a required parameter to run discovery-service as it enables to access discovery-service.yml configuration file from the [config-service](../config-service/README.md).
+Optionally **spring.profiles.active** can be passed with value **production** which enables logback to send all logs to [Elastic Stack](../elastic-stack/README.md) instead of logging in the console by default.
 
     $ java -jar discovery-service/build/libs/discovery-service-0.0.1-SNAPSHOT.jar
            -DCONFIG_SERVICE_PASSWORD=xxxx

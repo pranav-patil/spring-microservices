@@ -60,6 +60,15 @@ The spring micro services showcase contains the following services in action:
 Open postman application, go to `File` -> `Import` opening import dialog. Click on `Choose Files` to import and select the [spring-microservices.postman_collection.json](spring-microservices.postman_collection.json) from the repository.
 After import you see the collection `spring-microservices` on the left-side menu. Referring the [postman docs](https://learning.getpostman.com/docs/postman/environments_and_globals/manage_environments/), create environment, create variables namely `hostname` and select the environment before sending service requests.
 
+### Docker Management using Portainer
+
+Once the docker containers are up and running please navigate to the `Portainer UI` at [http://localhost:10001](http://localhost:10001). Portainer provides a web UI over Docker which allows to easily manage and interact with Docker containers.
+During the first login, a admin password screen is displayed were an appropriate `admin` password is to be chosen.
+Next Portainer will ask about the Docker engine instance to be connected to. Please connect to the local instance since all containers are deployed on same machine, by choosing the `Manage the Docker instance where Portainer is running` option. 
+Once connected to local docker engine we will be redirected to the Portainer home screen were we see all the list of containers created and running. We can get the details of any containers by clicking any one of the containers.
+The container details screen also enables to access basic container stats and logs. We can also SSH into the console using the `Console` link.
+Please refer to [Portainer.io](https://www.portainer.io/functions-and-features/) for further details of Portainer's features.  
+
 ### Docker Setup Notes 
 
 * The above **docker-compose up -d** command would create all the containers and start all the services parallelly in background. Since virtually all the services are dependent on few core services namely postgres-service, config-service, discovery-service and authorization-service, this would cause other services to fail and restart again until they establish successful connections with core services. 

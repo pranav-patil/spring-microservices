@@ -5,7 +5,7 @@ Monitor service provides both Spring Boot® Admin monitoring application as well
 
 ### Running the Monitor Service
 
-Pass the CONFIG_SERVICE_PASSWORD from the [config-service](/../config-service/README.md) to access monitor-service.yml configuration file.
+Pass the CONFIG_SERVICE_PASSWORD from the [config-service](../config-service/README.md) to access monitor-service.yml configuration file.
 
     $ java -jar monitor-service/build/libs/monitor-service-0.0.1-SNAPSHOT.jar
            -DCONFIG_SERVICE_PASSWORD=xxxx 

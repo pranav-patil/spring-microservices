@@ -55,7 +55,7 @@ When a client application wants access to the resources of a resource owner host
 
 ### Running the Authorization Service
 
-Pass the new AUTH_SERVICE_PASSWORD, CONFIG_SERVICE_PASSWORD from the [config-service](/../config-service/README.md) to access authorization-service.yml configuration file, corresponding passwords FINANCE_SERVICE_PASSWORD for finance-service and ANALYTICS_SERVICE_PASSWORD for analytics-service respectively.
+Pass the new AUTH_SERVICE_PASSWORD, CONFIG_SERVICE_PASSWORD from the [config-service](../config-service/README.md) to access authorization-service.yml configuration file, corresponding passwords FINANCE_SERVICE_PASSWORD for finance-service and ANALYTICS_SERVICE_PASSWORD for analytics-service respectively.
 
     $ java -jar authorization-service/build/libs/authorization-service-0.0.1-SNAPSHOT.jar
            -DAUTH_SERVICE_PASSWORD=secret -DFINANCE_SERVICE_PASSWORD=xxxx 

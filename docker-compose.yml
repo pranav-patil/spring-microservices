@@ -252,6 +252,16 @@ services:
         max-size: "10m"
         max-file: "10"
 
+  portainer:
+    image: portainer/portainer
+    networks:
+      - net
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer-data:/data
+    ports:
+      - "10001:9000"
+
 networks:
   net:
     driver: bridge
